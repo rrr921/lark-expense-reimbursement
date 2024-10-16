@@ -10,7 +10,6 @@ function LoadApp() {
   useEffect(() => {
     const fn = async () => {
       const table = await lark.bitable.base.getActiveTable();
-      const tableName = await table.getName();
       const resultField = await table.getFieldByName<lark.IAttachmentField>("港币金额");
       const amountField = await table.getFieldByName<lark.IAttachmentField>("报销金额");
       const currencyField = await table.getFieldByName<lark.IAttachmentField>("币种");
@@ -32,14 +31,14 @@ function LoadApp() {
         const month = String(exchangeDateValue.getMonth() + 1).padStart(2, "0");
         const day = String(exchangeDateValue.getDate()).padStart(2, "0");
 
-        const formattedDate = `${year}-${month}-${day}`; // yyyyMMdd
+        const formattedDate = `${year}-${month}-${day}`; // yyyy-MM-dd
         setDateInfo(`The date is ${formattedDate}`);
 
-        const a = JSON.stringify(amountValue);
+        const amountString = JSON.stringify(amountValue);
         const currencyType = JSON.stringify(currencyValue);
         const match = currencyType.match(/"text":"(\w+)"/);
         if (match && amount && exchangeDate) {
-          const mmm = exchange(match[1],'HKD',a,formattedDate);
+          const mmm = exchange(match[1],'HKD',amountString,formattedDate);
           await table.setCellValue(resultField.id, recordId, await mmm);
         }
       }
